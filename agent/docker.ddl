@@ -13,6 +13,67 @@ action "info", :description => "Retrieve information about the docker system" do
 			:display_as => "Info"
 end
 
+action "commit", :description => "Commit a container" do
+	display :always
+
+	input	:container,
+		:description	=> "Container",
+		:prompt => "Container",
+		:display_as	=> "Container reference",
+		:type		=> :string,
+		:validation	=> '^[-\.a-zA-Z0-9_]+$',
+		:optional	=> :false,
+		:maxlength	=> 256
+
+	input	:repo,
+		:description	=> "Repository",
+		:prompt => "Repo",
+		:display_as	=> "Repo",
+		:type		=> :string,
+		:validation	=> '^[-\.a-zA-Z0-9_]*$',
+		:optional	=> :true,
+		:maxlength	=> 1024
+
+	input	:tag,
+		:description	=> "Tag",
+		:prompt => "Tag",
+		:display_as	=> "Tag",
+		:type		=> :string,
+		:validation	=> '^[-\.a-zA-Z0-9_]*$',
+		:optional	=> :true,
+		:maxlength	=> 64
+
+	input	:comment,
+		:description	=> "Commit message",
+		:prompt => "Message",
+		:display_as	=> "Message",
+		:type		=> :string,
+		:validation	=> '^.*$',
+		:optional	=> :true,
+		:maxlength	=> 1024
+
+	input	:author,
+		:description	=> "Commit author",
+		:prompt => "Author",
+		:display_as	=> "Author",
+		:type		=> :string,
+		:validation	=> '^.*$',
+		:optional	=> :true,
+		:maxlength	=> 1024
+
+	input	:config,
+		:description	=> "Container configuration in JSON format",
+		:prompt => "Configuration",
+		:display_as	=> "Configuration",
+		:type		=> :string,
+		:validation	=> '^.*$',
+		:optional	=> :false,
+		:maxlength	=> 65536
+
+	output :id,
+		:description	=> "Image id",
+		:display_as   => "ID"
+end
 action "containers", :description => "Retrieve information about running containers" do
 
 	input	:all,
@@ -34,7 +95,7 @@ action "containers", :description => "Retrieve information about running contain
 		:prompt => "Show only containers created since containers with Id",
 		:display_as	=> "Since ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -43,9 +104,16 @@ action "containers", :description => "Retrieve information about running contain
 		:prompt => "Show only containers created before containers with Id",
 		:display_as	=> "Before ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :true,
 		:maxlength	=> 64
+
+	input	:size,
+		:description 	=> "Show sizes",
+		:prompt => "Show the containers sizes",
+		:optional => :true,
+		:type => :boolean,
+		:display_as	=> "Show Size"
 
     output :containers,
 	  :description => "Output from API call, map of containers with detail data",
@@ -60,7 +128,7 @@ action "createcontainer", :description => "Create an container" do
 		:prompt => "From",
 		:display_as	=> "From",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]+$',
+		:validation	=> '^[-\.a-zA-Z0-9_]*$',
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -91,7 +159,7 @@ action "inspectcontainer", :description => "Inspect container details" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -108,7 +176,7 @@ action "top", :description => "Get processes running on container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -117,7 +185,7 @@ action "top", :description => "Get processes running on container" do
 		:prompt => "psargs",
 		:display_as	=> "psarguments",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9]+$',
+		:validation	=> '^[-\.a-zA-Z0-9]*$',
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -134,7 +202,7 @@ action "changes", :description => "Show container changes" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -151,7 +219,7 @@ action "start", :description => "Start a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -177,7 +245,7 @@ action "stop", :description => "Stop a running container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -201,7 +269,7 @@ action "restart", :description => "Restart a running container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -225,7 +293,7 @@ action "kill", :description => "Kill a running container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 12
 
@@ -251,7 +319,7 @@ action "pause", :description => "Pause a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -268,7 +336,7 @@ action "unpause", :description => "Un-pause a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -285,7 +353,7 @@ action "deletecontainer", :description => "Delete a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> '^[a-fA-F0-9]*$',
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -341,17 +409,8 @@ action "createimage", :description => "Create an image" do
 		:prompt => "From",
 		:display_as	=> "From",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_/]+$',
+		:validation	=> '^[-:\.a-zA-Z0-9_/]+$',
 		:optional	=> :false,
-		:maxlength	=> 64
-
-	input	:repo,
-		:description	=> "From repository",
-		:prompt => "Repo",
-		:display_as	=> "Repo",
-		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]+$',
-		:optional	=> :true,
 		:maxlength	=> 64
 
 	input	:tag,
@@ -359,16 +418,7 @@ action "createimage", :description => "Create an image" do
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]+$',
-		:optional	=> :true,
-		:maxlength	=> 64
-
-	input	:registry,
-		:description	=> "Registry",
-		:prompt => "Registry",
-		:display_as	=> "Registry",
-		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_\.:/]+$',
+		:validation	=> '^[-\.a-zA-Z0-9_]*$',
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -384,7 +434,7 @@ action "inspectimage", :description => "Retrieve information about an image" do
 		:display_as	=> "Name",
 		:type		=> :string,
 		:optional	=> :true,
-		:validation	=> '^/?[-\.a-zA-Z0-9_]+$',
+		:validation	=> '^/?[-\.a-zA-Z0-9_]*$',
 		:maxlength	=> 64
 
     output :details,
@@ -399,7 +449,7 @@ action "history", :description => "Retrieve history of an image" do
 		:display_as	=> "Name",
 		:type		=> :string,
 		:optional	=> :true,
-		:validation	=> '^/?[-\.a-zA-Z0-9_]+$',
+		:validation	=> '^/?[-\.a-zA-Z0-9_]*$',
 		:maxlength	=> 64
 
     output :history,
@@ -424,7 +474,7 @@ action "push", :description => "Push an image to the registry" do
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]+$',
+		:validation	=> '^[-\.a-zA-Z0-9_]*$',
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -433,7 +483,7 @@ action "push", :description => "Push an image to the registry" do
 		:prompt => "Registry",
 		:display_as	=> "Registry",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_\.:/]+$',
+		:validation	=> '^[-\.a-zA-Z0-9_\.:/]*$',
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -452,7 +502,7 @@ action "tag", :description => "Tag an image" do
 		:display_as	=> "Name",
 		:type		=> :string,
 		:optional	=> :true,
-		:validation	=> '^/?[-\.a-zA-Z0-9_]+$',
+		:validation	=> '^/?[-\.a-zA-Z0-9_]*$',
 		:maxlength	=> 64
 
 	input	:repo,
@@ -460,7 +510,7 @@ action "tag", :description => "Tag an image" do
 		:prompt => "Repo",
 		:display_as	=> "Repo",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]+$',
+		:validation	=> '^[-\.a-zA-Z0-9_]*$',
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -495,7 +545,7 @@ action "deleteimage", :description => "Delete a image" do
 		:display_as	=> "Name",
 		:type		=> :string,
 		:optional	=> :true,
-		:validation	=> '^/?[-\.a-zA-Z0-9_]+$',
+		:validation	=> '^/?[-\.a-zA-Z0-9_]*$',
 		:maxlength	=> 64
 
 	input	:noprune,

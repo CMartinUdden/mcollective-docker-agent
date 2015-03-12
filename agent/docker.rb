@@ -21,7 +21,7 @@ module MCollective
                 logger.debug "docker/containers"
 
                 options = {}
-                [:all, :limit, :sinceId, :beforeId].each {|o|
+                [:all, :limit, :sinceId, :beforeId, :size].each {|o|
                     options[o] = request[o] if request[o]
                 }
                 logger.debug "docker/containers options=#{options}"
@@ -41,8 +41,10 @@ module MCollective
                 begin
                     _validateconfig(request[:config])
                     info = JSON.parse(_request(:post, "containers/create?", options, request[:config]))
-                    reply[:warnings] = info[:warnings] if info[:warnings]
-                    reply[:id] = info[:id] if info[:id]
+                    logger.debug "docker/createcontainer #{info}"
+
+                    reply[:warnings] = info["Warnings"] if info["Warnings"]
+                    reply[:id] = info["Id"] if info["Id"]
                 rescue => e
                     reply.fail! "Error querying docker api (POST containers/create), #{e}"
                     logger.error e
@@ -88,7 +90,7 @@ module MCollective
                 logger.debug "docker/start" 
 
                 begin
-                    reply[:exitcode] = _request(:post, "containers/#{request[:id]}/start")
+                    reply[:exitcode] = _request(:post, "containers/#{request[:id]}/start", {}, {})
                 rescue => e
                     reply.fail! "Error querying docker api (POST containers/#{request[:id]}/start), #{e}"
                     logger.error e
@@ -189,13 +191,12 @@ module MCollective
             action "createimage" do
                 logger.debug "docker/createimage" 
                 options = {}
-                [:repo, :tag, :registry].each {|o|
-                    options[o] = request[o] if request[o]
-                }
-                options[:fromImage] = request[:fromimage] if request[:fromimage]
+                options[:fromImage] = request[:fromimage]
+                options[:tag] = request[:tag] if request[:tag]
 
                 begin
-                    reply[:exitcode] = _request(:post, "images/create?", options)
+                    dummy = _request(:post, "images/create?", options)
+                    reply[:exitcode] = 200
                 rescue => e
                     reply.fail! "Error querying docker api (POST images/create), #{e}"
                     logger.error e
@@ -273,24 +274,40 @@ module MCollective
             action "ping" do
             end
             action "commit" do
+                logger.debug "docker/commit" 
+                options = {}
+                [:container, :repo, :tag, :comment, :author].each {|o|
+                    options[o] = request[o] if request[o]
+                }
+
+                begin
+                    info = JSON.parse(_request(:post, "commit?", options, request[:config]))
+                    reply[:id] = info["Id"]
+                rescue => e
+                    reply.fail! "Error querying docker api (POST containers/commit), #{e}"
+                    logger.error e
+                end
+                logger.debug "docker/commit done."
             end
             action "events" do
             end
             private
             def _request(htmethod, endpoint, options = {}, body = "")
+                timeout = 3600
                 rs = endpoint
                 unless options == {}
                     options.each {|r| rs += "&" + URI.escape(r[0].to_s) + "=" + URI.escape(r[1].to_s) }
                 end
                 logger.debug "docker/_request htmethod=#{htmethod} endpoint=#{endpoint}, request=unix:///#{rs}, body=#{body}"
+                connection = Excon.new("unix:///#{rs}", :socket => '/var/run/docker.sock')
                 case htmethod
                 when :get
-                    response = Excon.get("unix:///#{rs}", :socket => '/var/run/docker.sock')
+                    response = connection.request(:method => :get, :read_timeout => timeout )
                 when :post
-                    response = Excon.post("unix:///#{rs}", :socket => '/var/run/docker.sock',
-                                          :body => body, :headers => {'Content-Type' => 'application/json'})
+                    response = connection.request(:method => :post, :read_timeout => timeout, 
+                                                  :body => body, :headers => {'Content-Type' => 'application/json'})
                 when :delete
-                    response = Excon.delete("unix:///#{rs}", :socket => '/var/run/docker.sock',
+                    response = connection.request(:method => :delete, :read_timeout => timeout, 
                                             :body => body, :headers => {'Content-Type' => 'application/json'})
                 else
                     raise "Internal error"
@@ -305,16 +322,17 @@ module MCollective
                 when 204
                     return 204
                 else
+                logger.debug "docker/_request else case status=#{response.status}"
                     raise "Unable to fulfill request. HTTP status #{response.status}"
                 end
             end
             def _validateconfig(config)
-              c = JSON.parse(config)
-              c[:ExposedPorts].each {|pc|
-                  port = pc[0].gsub(/^(tcp|udp)\//, '').to_i
-                  server = TCPServer.new(pc[:HostIp], port)
-                  server.close
-              }
+#              c = JSON.parse(config)
+#              c[:ExposedPorts].each {|pc|
+#                  port = pc[0].gsub(/^(tcp|udp)\//, '').to_i
+#                  server = TCPServer.new(pc[:HostIp], port)
+#                  server.close
+#              }
               return true
             end
         end

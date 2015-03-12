@@ -223,15 +223,6 @@ action "start", :description => "Start a container" do
 		:optional	=> :false,
 		:maxlength	=> 64
 
-	input	:hostconfig,
-		:description	=> "Host specific container configuration in JSON format",
-		:prompt => "Host Configuration",
-		:display_as	=> "Host Configuration",
-		:type		=> :string,
-		:validation	=> '^.*$',
-		:optional	=> :false,
-		:maxlength	=> 65536
-
 	output :exitcode,
 		:description	=> "return code of action",
 		:display_as   => "exitcode"

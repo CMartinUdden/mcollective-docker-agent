@@ -88,9 +88,9 @@ module MCollective
             end
             action "start" do
                 logger.debug "docker/start" 
-
+    
                 begin
-                    reply[:exitcode] = _request(:post, "containers/#{request[:id]}/start", {}, {})
+                    reply[:exitcode] = _request(:post, "containers/#{request[:id]}/start")
                 rescue => e
                     reply.fail! "Error querying docker api (POST containers/#{request[:id]}/start), #{e}"
                     logger.error e
@@ -304,7 +304,7 @@ module MCollective
                 when :get
                     response = connection.request(:method => :get, :read_timeout => timeout )
                 when :post
-                    response = connection.request(:method => :post, :read_timeout => timeout, 
+                    response = connection.request(:method => :post, :read_timeout => timeout,
                                                   :body => body, :headers => {'Content-Type' => 'application/json'})
                 when :delete
                     response = connection.request(:method => :delete, :read_timeout => timeout, 

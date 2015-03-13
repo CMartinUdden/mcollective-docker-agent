@@ -264,8 +264,16 @@ module MCollective
                 [:noprune, :force].each {|o|
                     options[o] = request[o] if request[o]
                 }
-                reply[:exitcode] = _request(:delete, "images/#{request[:id]}?", options)
-                logger.debug "docker/deleteimage done."
+
+                begin
+                  reply[:images] = _request(:delete, "images/#{request[:name]}?", options)
+                  logger.debug "docker/deleteimage done."
+                rescue => e
+                  unless @errorbody.empty?
+                    reply[:images] = @errorbody
+                  end
+                  reply.fail!("Error querying docker api (DELETE images/#{request[:name]})")
+                end
             end
             action "build" do
             end
@@ -293,6 +301,7 @@ module MCollective
             end
             private
             def _request(htmethod, endpoint, options = {}, body = "")
+              @errorbody = ""
                 timeout = 3600
                 rs = endpoint
                 unless options == {}
@@ -322,8 +331,9 @@ module MCollective
                 when 204
                     return 204
                 else
-                logger.debug "docker/_request else case status=#{response.status}"
-                    raise "Unable to fulfill request. HTTP status #{response.status}"
+                  @errorbody = response.body if response.body
+                  logger.debug "docker/_request else case status=#{response.status}"
+                  raise "Unable to fulfill request. HTTP status #{response.status}"
                 end
             end
             def _validateconfig(config)

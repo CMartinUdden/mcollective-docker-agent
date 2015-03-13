@@ -224,8 +224,8 @@ action "start", :description => "Start a container" do
 		:maxlength	=> 64
 
 	output :exitcode,
-		:description	=> "return code of action",
-		:display_as   => "exitcode"
+		:description	=> "Exitcode",
+		:display_as   => "Exitcode"
 end
 
 action "stop", :description => "Stop a running container" do
@@ -555,7 +555,7 @@ action "deleteimage", :description => "Delete a image" do
 		:default	=> :false,
 		:optional	=> :true
 
-	output :exitcode,
-		:description	=> "return code of action",
-		:display_as   => "exitcode"
+	output :images,
+		:description	=> "Images",
+		:display_as   => "Images"
 end

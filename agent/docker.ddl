@@ -12,6 +12,10 @@ def tag_validation(optional = false)
   "'^[-\.a-zA-Z0-9_]#{optional ? '*' : '?'}$"
 end
 
+def any_string_validation(optional = false)
+  "'^.#{optional ? '*' : '?'}$"
+end
+
 max_length_container = 64
 max_length_image = 1024
 max_length_tag = 64
@@ -59,7 +63,7 @@ action "commit", :description => "Create a new image from a container's changes"
 		:prompt => "Message",
 		:display_as	=> "Message",
 		:type		=> :string,
-		:validation	=> '^.*$',
+		:validation	=> any_string_validation(true),
 		:optional	=> :true,
 		:maxlength	=> 1024
 
@@ -68,7 +72,7 @@ action "commit", :description => "Create a new image from a container's changes"
 		:prompt => "Author",
 		:display_as	=> "Author",
 		:type		=> :string,
-		:validation	=> '^.*$',
+		:validation	=> any_string_validation(true),
 		:optional	=> :true,
 		:maxlength	=> 1024
 
@@ -103,7 +107,7 @@ action "create", :description => "Create a new container" do
 		:prompt => "Configuration",
 		:display_as	=> "Configuration",
 		:type		=> :string,
-		:validation	=> '^.*$',
+		:validation	=> any_string_validation,
 		:optional	=> :false,
 		:maxlength	=> 65536
 
@@ -162,8 +166,8 @@ action "images", :description => "List images" do
 		:prompt => "Filter",
 		:display_as	=> "Filter",
 		:type		=> :string,
+		:validation	=> any_string_validation(true),
 		:optional	=> :true,
-		:validation	=> '.*',
 		:maxlength	=> 1024
 
     output :images,

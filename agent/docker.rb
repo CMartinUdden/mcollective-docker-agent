@@ -55,9 +55,9 @@ module MCollective
         logger.debug "docker/history"
 
         begin
-          reply[:history] = _request(:get, "images/#{request[:name]}/history")
+          reply[:history] = _request(:get, "images/#{request[:image]}/history")
         rescue => e
-          reply.fail! "Error querying docker api (GET images/#{request[:name]}/history), #{e}"
+          reply.fail! "Error querying docker api (GET images/#{request[:image]}/history), #{e}"
           logger.error e
         end
         logger.debug "docker/history done."
@@ -104,9 +104,9 @@ module MCollective
         logger.debug "docker/inspecti"
 
         begin
-          reply[:details] = _request(:get, "images/#{request[:name]}/json")
+          reply[:details] = _request(:get, "images/#{request[:image]}/json")
         rescue => e
-          reply.fail! "Error querying docker api (GET images/#{request[:name]}/json), #{e}"
+          reply.fail! "Error querying docker api (GET images/#{request[:image]}/json), #{e}"
           logger.error e
         end
         logger.debug "docker/inspecti done."
@@ -173,13 +173,13 @@ module MCollective
 
         begin
           if request[:registry]
-            reply[:exitcode] = _request(:post, "images/#{request[:registry]}/#{request[:name]}/push?", 
+            reply[:exitcode] = _request(:post, "images/#{request[:registry]}/#{request[:image]}/push?", 
                                         options)
           else
-            reply[:exitcode] = _request(:post, "images/#{request[:name]}/push?", options)
+            reply[:exitcode] = _request(:post, "images/#{request[:image]}/push?", options)
           end
         rescue => e
-          reply.fail! "Error querying docker api (POST images/#{request[:name]}/push), #{e}"
+          reply.fail! "Error querying docker api (POST images/#{request[:image]}/push), #{e}"
           logger.error e
         end
         logger.debug "docker/push done."
@@ -219,13 +219,13 @@ module MCollective
         }
 
         begin
-          reply[:images] = _request(:delete, "images/#{request[:name]}?", options)
+          reply[:images] = _request(:delete, "images/#{request[:image]}?", options)
           logger.debug "docker/rmi done."
         rescue => e
           unless @errorbody.empty?
             reply[:images] = @errorbody
           end
-          reply.fail!("Error querying docker api (DELETE images/#{request[:name]})")
+          reply.fail!("Error querying docker api (DELETE images/#{request[:image]})")
         end
       end
       action "start" do
@@ -260,9 +260,9 @@ module MCollective
         }
 
         begin
-          reply[:exitcode] = _request(:post, "images/#{request[:name]}/tag?", options)
+          reply[:exitcode] = _request(:post, "images/#{request[:image]}/tag?", options)
         rescue => e
-          reply.fail! "Error querying docker api (POST images/#{request[:name]}/tag), #{e}"
+          reply.fail! "Error querying docker api (POST images/#{request[:image]}/tag), #{e}"
           logger.error e
         end
         logger.debug "docker/tag done."

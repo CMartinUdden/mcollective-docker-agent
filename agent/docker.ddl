@@ -72,6 +72,14 @@ action "create", :description => "Create a new container" do
 		:optional	=> :false,
 		:maxlength	=> 1024
 
+	input :name,
+		:description	=> "Assign the specified name",
+		:prompt => "Name",
+		:display_as	=> "NAme",
+		:type		=> :string,
+		:validation	=> '^[-\.a-zA-Z0-9_:@/]*$',
+		:optional	=> :true,
+		:maxlength	=> 64
 
 	input	:config,
 		:description	=> "Container configuration in JSON format",

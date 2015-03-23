@@ -12,6 +12,8 @@ def tag_validation(optional = false)
   "'^[-\.a-zA-Z0-9_]#{optional ? '*' : '?'}$"
 end
 
+max_length_tag = 64
+
 metadata    :name        => "Docker Access Agent",
             :description => "Agent to access the Docker API via MCollective",
             :author      => "Martin Uddén <martin.udden@gmail.com>",
@@ -48,7 +50,7 @@ action "commit", :description => "Create a new image from a container's changes"
 		:type		=> :string,
 		:validation	=> tag_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_tag
 
 	input	:comment,
 		:description	=> "Commit message",
@@ -313,7 +315,7 @@ action "pull", :description => "Pull an image or a repository from the registry"
 		:type		=> :string,
 		:validation	=> tag_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_tag
 
 	output :exitcode,
 		:description	=> "return code of action",
@@ -339,7 +341,7 @@ action "push", :description => "Push an image or a repository to the registry" d
 		:type		=> :string,
 		:validation	=> tag_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_tag
 
 	output :exitcode,
 		:description	=> "return code of action",
@@ -505,7 +507,7 @@ action "tag", :description => "Tag an image into a repository" do
 		:type		=> :string,
 		:validation	=> tag_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_tag
 
 	input	:force,
 		:description => "Force",

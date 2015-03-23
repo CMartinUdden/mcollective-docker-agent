@@ -12,6 +12,7 @@ def tag_validation(optional = false)
   "'^[-\.a-zA-Z0-9_]#{optional ? '*' : '?'}$"
 end
 
+max_length_image = 1024
 max_length_tag = 64
 
 metadata    :name        => "Docker Access Agent",
@@ -85,7 +86,7 @@ action "create", :description => "Create a new container" do
 		:type		=> :string,
 		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input :name,
 		:description	=> "Assign the specified name",
@@ -139,7 +140,7 @@ action "history", :description => "Show the history of an image" do
 		:type		=> :string,
 		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
     output :history,
 	  :description => "Output from API call, map of image history",
@@ -200,7 +201,7 @@ action "inspecti", :description => "Return low-level information on an image" do
 		:type		=> :string,
 		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
     output :details,
 	  :description => "Output from API call, map of image details",
@@ -306,7 +307,7 @@ action "pull", :description => "Pull an image or a repository from the registry"
 		:type		=> :string,
 		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input	:tag,
 		:description	=> "Tag",
@@ -332,7 +333,7 @@ action "push", :description => "Push an image or a repository to the registry" d
 		:type		=> :string,
 		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input	:tag,
 		:description	=> "Tag",
@@ -415,7 +416,7 @@ action "rmi", :description => "Remove an image" do
 		:type		=> :string,
 		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input	:noprune,
 		:description => "No prune",
@@ -489,7 +490,7 @@ action "tag", :description => "Tag an image into a repository" do
 		:type		=> :string,
 		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input	:repo,
 		:description	=> "Repository",

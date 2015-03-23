@@ -12,6 +12,7 @@ def tag_validation(optional = false)
   "'^[-\.a-zA-Z0-9_]#{optional ? '*' : '?'}$"
 end
 
+max_length_container = 64
 max_length_image = 1024
 max_length_tag = 64
 
@@ -33,7 +34,7 @@ action "commit", :description => "Create a new image from a container's changes"
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:repo,
 		:description	=> "Repository",
@@ -125,7 +126,7 @@ action "diff", :description => "Inspect changes on a container's filesystem" do
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :changes,
 		:description	=> "Container changes as map",
@@ -186,7 +187,7 @@ action "inspect", :description => "Return low-level information on a container" 
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :details,
 		:description	=> "Container details as map",
@@ -218,7 +219,7 @@ action "kill", :description => "Kill a running container using SIGKILL or a spec
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 12
+		:maxlength	=> max_length_container
 
 	input	:signal,
 		:description	=> "Signal to send to the container (e.g. SIGKILL)",
@@ -244,7 +245,7 @@ action "pause", :description => "Pause all processes within a container" do
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :exitcode,
 		:description	=> "return code of action",
@@ -274,7 +275,7 @@ action "ps", :description => "List containers" do
 		:type		=> :string,
 		:validation	=> container_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:beforeId,
 		:description	=> "Show only containers created before containers with Id",
@@ -283,7 +284,7 @@ action "ps", :description => "List containers" do
 		:type		=> :string,
 		:validation	=> container_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:size,
 		:description 	=> "Show sizes",
@@ -359,7 +360,7 @@ action "restart", :description => "Restart a running container" do
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:timeout,
 		:description => "Time to wait before killing the container",
@@ -383,7 +384,7 @@ action "rm", :description => "Remove a container" do
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:rmvolumes,
 		:description => "Remove the associated volumes",
@@ -449,7 +450,7 @@ action "start", :description => "Restart a stopped container" do
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :exitcode,
 		:description	=> "Exitcode",
@@ -466,7 +467,7 @@ action "stop", :description => "Stop a running container by sending SIGTERM and 
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:timeout,
 		:description => "Time to wait before killing the container",
@@ -533,7 +534,7 @@ action "top", :description => "Display the running processes of a container" do
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:psargs,
 		:description	=> "Argument to pass to ps",
@@ -559,7 +560,7 @@ action "unpause", :description => "Unpause all processes within a container" do
 		:type		=> :string,
 		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :exitcode,
 		:description	=> "return code of action",

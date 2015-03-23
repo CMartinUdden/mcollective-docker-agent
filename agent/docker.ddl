@@ -1,4 +1,9 @@
 #{spaces}#!/bin/ruby
+
+def container_validation(optional = false)
+  "^[a-fA-F0-9]#{optional ? '*' : '?'}$"
+end
+
 metadata    :name        => "Docker Access Agent",
             :description => "Agent to access the Docker API via MCollective",
             :author      => "Martin Uddén <martin.udden@gmail.com>",
@@ -15,7 +20,7 @@ action "commit", :description => "Create a new image from a container's changes"
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -107,7 +112,7 @@ action "diff", :description => "Inspect changes on a container's filesystem" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -168,7 +173,7 @@ action "inspect", :description => "Return low-level information on a container" 
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -200,7 +205,7 @@ action "kill", :description => "Kill a running container using SIGKILL or a spec
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 12
 
@@ -226,7 +231,7 @@ action "pause", :description => "Pause all processes within a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -256,7 +261,7 @@ action "ps", :description => "List containers" do
 		:prompt => "Show only containers created since containers with Id",
 		:display_as	=> "Since ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]*$',
+		:validation	=> container_validation(true),
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -265,7 +270,7 @@ action "ps", :description => "List containers" do
 		:prompt => "Show only containers created before containers with Id",
 		:display_as	=> "Before ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]*$',
+		:validation	=> container_validation(true),
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -341,7 +346,7 @@ action "restart", :description => "Restart a running container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -365,7 +370,7 @@ action "rm", :description => "Remove a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -431,7 +436,7 @@ action "start", :description => "Restart a stopped container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -448,7 +453,7 @@ action "stop", :description => "Stop a running container by sending SIGTERM and 
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -515,7 +520,7 @@ action "top", :description => "Display the running processes of a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -541,7 +546,7 @@ action "unpause", :description => "Unpause all processes within a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 

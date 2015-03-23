@@ -8,6 +8,10 @@ def image_validation(optional = false)
   "^[-\.a-zA-Z0-9_:/]#{optional ? '*' : '?'}$"
 end
 
+def tag_validation(optional = false)
+  "'^[-\.a-zA-Z0-9_]#{optional ? '*' : '?'}$"
+end
+
 metadata    :name        => "Docker Access Agent",
             :description => "Agent to access the Docker API via MCollective",
             :author      => "Martin Uddén <martin.udden@gmail.com>",
@@ -42,7 +46,7 @@ action "commit", :description => "Create a new image from a container's changes"
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[a-zA-Z0-9_@-]+$',
+		:validation	=> tag_validation,
 		:optional	=> :false,
 		:maxlength	=> 64
 
@@ -307,7 +311,7 @@ action "pull", :description => "Pull an image or a repository from the registry"
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]*$',
+		:validation	=> tag_validation(true),
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -333,7 +337,7 @@ action "push", :description => "Push an image or a repository to the registry" d
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]*$',
+		:validation	=> tag_validation(true),
 		:optional	=> :true,
 		:maxlength	=> 64
 
@@ -499,7 +503,7 @@ action "tag", :description => "Tag an image into a repository" do
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]+$',
+		:validation	=> tag_validation(true),
 		:optional	=> :true,
 		:maxlength	=> 64
 

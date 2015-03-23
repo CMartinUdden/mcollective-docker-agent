@@ -4,6 +4,10 @@ def container_validation(optional = false)
   "^[a-fA-F0-9]#{optional ? '*' : '?'}$"
 end
 
+def image_validation(optional = false)
+  "^[-\.a-zA-Z0-9_:/]#{optional ? '*' : '?'}$"
+end
+
 metadata    :name        => "Docker Access Agent",
             :description => "Agent to access the Docker API via MCollective",
             :author      => "Martin Uddén <martin.udden@gmail.com>",
@@ -73,7 +77,7 @@ action "create", :description => "Create a new container" do
 		:prompt => "From",
 		:display_as	=> "From",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]*$',
+		:validation	=> image_validation,
 		:optional	=> :false,
 		:maxlength	=> 1024
 
@@ -127,7 +131,7 @@ action "history", :description => "Show the history of an image" do
 		:prompt => "Name",
 		:display_as	=> "Name",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
 		:maxlength	=> 1024
 
@@ -188,7 +192,7 @@ action "inspecti", :description => "Return low-level information on an image" do
 		:prompt => "Name",
 		:display_as	=> "Name",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
 		:maxlength	=> 1024
 
@@ -294,7 +298,7 @@ action "pull", :description => "Pull an image or a repository from the registry"
 		:prompt => "From",
 		:display_as	=> "From",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
 		:maxlength	=> 1024
 
@@ -320,7 +324,7 @@ action "push", :description => "Push an image or a repository to the registry" d
 		:prompt => "From",
 		:display_as	=> "From",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
 		:maxlength	=> 1024
 
@@ -403,7 +407,7 @@ action "rmi", :description => "Remove an image" do
 		:prompt => "Name",
 		:display_as	=> "Name",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
 		:maxlength	=> 1024
 
@@ -477,7 +481,7 @@ action "tag", :description => "Tag an image into a repository" do
 		:prompt => "Name",
 		:display_as	=> "Name",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
 		:maxlength	=> 1024
 

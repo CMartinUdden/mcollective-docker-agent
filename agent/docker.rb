@@ -10,7 +10,7 @@ module MCollective
         logger.debug "docker/commit" 
         options = {}
         [:container, :repo, :tag, :comment, :author].each {|o|
-          options[o] = request[o] if request[o]
+          options[o] = request[o] if request.include?(o)
         }
 
         begin
@@ -67,7 +67,7 @@ module MCollective
 
         options = {}
         [:all, :filters].each {|o|
-          options[o] = request[o] if request[o]
+          options[o] = request[o] if request.include?(o)
         }
         logger.debug "docker/images options=#{options}"
         begin
@@ -140,7 +140,7 @@ module MCollective
 
         options = {}
         [:all, :limit, :sinceId, :beforeId, :size].each {|o|
-          options[o] = request[o] if request[o]
+          options[o] = request[o] if request.include?(o)
         }
         logger.debug "docker/ps options=#{options}"
         begin
@@ -215,7 +215,7 @@ module MCollective
         logger.debug "docker/rmi" 
         options = {}
         [:noprune, :force].each {|o|
-          options[o] = request[o] if request[o]
+          options[o] = request[o] if request.include?(o)
         }
 
         begin
@@ -256,7 +256,7 @@ module MCollective
         logger.debug "docker/tag" 
         options = {}
         [:repo, :tag, :force].each {|o|
-          options[o] = request[o] if request[o]
+          options[o] = request[o] if request.include?(o)
         }
 
         begin

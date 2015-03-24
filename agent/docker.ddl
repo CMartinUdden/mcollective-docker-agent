@@ -16,6 +16,10 @@ def any_string_validation(optional = false)
   "'^.#{optional ? '*' : '?'}$"
 end
 
+def repo_validation
+	'^([A-Za-z0-9_\.-]{1,1024}(:[0-9]{1,5})?/)?([A-Za-z0-9@_-]{1,64}/)?[A-Za-z0-9@_-]{1,64}$',
+end
+
 max_length_container = 64
 max_length_image = 1024
 max_length_tag = 64
@@ -45,7 +49,7 @@ action "commit", :description => "Create a new image from a container's changes"
 		:prompt => "Repo",
 		:display_as	=> "Repo",
 		:type		=> :string,
-		:validation	=> '^([A-Za-z0-9_\.-]{1,1024}(:[0-9]{1,5})?/)?([A-Za-z0-9@_-]{1,64}/)?[A-Za-z0-9@_-]{1,64}$',
+		:validation	=> repo_validation,
 		:optional	=> :false,
 		:maxlength	=> 1060
 
@@ -502,7 +506,7 @@ action "tag", :description => "Tag an image into a repository" do
 		:prompt => "Repo",
 		:display_as	=> "Repo",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> repo_validation,
 		:optional	=> :false,
 		:maxlength	=> 1024
 

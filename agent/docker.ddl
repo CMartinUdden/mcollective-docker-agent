@@ -23,6 +23,7 @@ end
 max_length_container = 64
 max_length_image = 1024
 max_length_tag = 64
+max_length_repo = 1060
 
 metadata    :name        => "Docker Access Agent",
             :description => "Agent to access the Docker API via MCollective",
@@ -51,7 +52,7 @@ action "commit", :description => "Create a new image from a container's changes"
 		:type		=> :string,
 		:validation	=> repo_validation,
 		:optional	=> :false,
-		:maxlength	=> 1060
+		:maxlength	=> max_length_repo
 
 	input	:tag,
 		:description	=> "Tag",
@@ -508,7 +509,7 @@ action "tag", :description => "Tag an image into a repository" do
 		:type		=> :string,
 		:validation	=> repo_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_repo
 
 	input	:tag,
 		:description	=> "Tag",

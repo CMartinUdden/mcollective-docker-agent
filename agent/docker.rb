@@ -172,12 +172,8 @@ module MCollective
         options[:tag] = request[:tag] if request[:tag]
 
         begin
-          if request[:registry]
-            reply[:exitcode] = _request(:post, "images/#{request[:registry]}/#{request[:image]}/push?", 
-                                        options)
-          else
-            reply[:exitcode] = _request(:post, "images/#{request[:image]}/push?", options)
-          end
+          manifest = _request(:get, "images/#{request[:image]}/manifest") 
+          reply[:exitcode] = _request(:post, "images/#{request[:image]}/push?", manifest)
         rescue => e
           reply.fail! "Error querying docker api (POST images/#{request[:image]}/push), #{e}"
           logger.error e
@@ -232,7 +228,7 @@ module MCollective
         logger.debug "docker/start" 
 
         begin
-          reply[:exitcode] = _request(:post, "containers/#{request[:id]}/start")
+          reply[:result] = _request(:post, "containers/#{request[:id]}/start")
         rescue => e
           reply.fail! "Error querying docker api (POST containers/#{request[:id]}/start), #{e}"
           logger.error e

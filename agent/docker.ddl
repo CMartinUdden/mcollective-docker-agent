@@ -75,7 +75,7 @@ action "create", :description => "Create a new container" do
 	input :name,
 		:description	=> "Assign the specified name",
 		:prompt => "Name",
-		:display_as	=> "NAme",
+		:display_as	=> "Name",
 		:type		=> :string,
 		:validation	=> '^[-\.a-zA-Z0-9_:@/]*$',
 		:optional	=> :true,
@@ -328,9 +328,9 @@ action "push", :description => "Push an image or a repository to the registry" d
 		:optional	=> :true,
 		:maxlength	=> 64
 
-	output :exitcode,
-		:description	=> "return code of action",
-		:display_as   => "exitcode"
+	output :result,
+		:description	=> "Result of action",
+		:display_as   => "Result"
 end
 
 action "restart", :description => "Restart a running container" do

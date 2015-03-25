@@ -1,4 +1,4 @@
-#{spaces}#!/bin/ruby
+#!/bin/ruby
 
 def container_validation(optional = false)
   "^[a-fA-F0-9]#{optional ? '*' : '?'}$"

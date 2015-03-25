@@ -1,4 +1,30 @@
 #{spaces}#!/bin/ruby
+
+def container_validation(optional = false)
+  "^[a-fA-F0-9]#{optional ? '*' : '?'}$"
+end
+
+def image_validation(optional = false)
+  "^[-\.a-zA-Z0-9_:/]#{optional ? '*' : '?'}$"
+end
+
+def tag_validation(optional = false)
+  "'^[-\.a-zA-Z0-9_]#{optional ? '*' : '?'}$"
+end
+
+def any_string_validation(optional = false)
+  "'^.#{optional ? '*' : '?'}$"
+end
+
+def repo_validation
+	'^([A-Za-z0-9_\.-]{1,1024}(:[0-9]{1,5})?/)?([A-Za-z0-9@_-]{1,64}/)?[A-Za-z0-9@_-]{1,64}$',
+end
+
+max_length_container = 64
+max_length_image = 1024
+max_length_tag = 64
+max_length_repo = 1060
+
 metadata    :name        => "Docker Access Agent",
             :description => "Agent to access the Docker API via MCollective",
             :author      => "Martin Uddén <martin.udden@gmail.com>",
@@ -15,34 +41,34 @@ action "commit", :description => "Create a new image from a container's changes"
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:repo,
 		:description	=> "Repository",
 		:prompt => "Repo",
 		:display_as	=> "Repo",
 		:type		=> :string,
-		:validation	=> '^([A-Za-z0-9_\.-]{1,1024}(:[0-9]{1,5})?/)?([A-Za-z0-9@_-]{1,64}/)?[A-Za-z0-9@_-]{1,64}$',
+		:validation	=> repo_validation,
 		:optional	=> :false,
-		:maxlength	=> 1060
+		:maxlength	=> max_length_repo
 
 	input	:tag,
 		:description	=> "Tag",
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[a-zA-Z0-9_@-]+$',
+		:validation	=> tag_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_tag
 
 	input	:comment,
 		:description	=> "Commit message",
 		:prompt => "Message",
 		:display_as	=> "Message",
 		:type		=> :string,
-		:validation	=> '^.*$',
+		:validation	=> any_string_validation(true),
 		:optional	=> :true,
 		:maxlength	=> 1024
 
@@ -51,7 +77,7 @@ action "commit", :description => "Create a new image from a container's changes"
 		:prompt => "Author",
 		:display_as	=> "Author",
 		:type		=> :string,
-		:validation	=> '^.*$',
+		:validation	=> any_string_validation(true),
 		:optional	=> :true,
 		:maxlength	=> 1024
 
@@ -68,9 +94,9 @@ action "create", :description => "Create a new container" do
 		:prompt => "From",
 		:display_as	=> "From",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]*$',
+		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input :name,
 		:description	=> "Assign the specified name",
@@ -86,7 +112,7 @@ action "create", :description => "Create a new container" do
 		:prompt => "Configuration",
 		:display_as	=> "Configuration",
 		:type		=> :string,
-		:validation	=> '^.*$',
+		:validation	=> any_string_validation,
 		:optional	=> :false,
 		:maxlength	=> 65536
 
@@ -107,9 +133,9 @@ action "diff", :description => "Inspect changes on a container's filesystem" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :changes,
 		:description	=> "Container changes as map",
@@ -122,9 +148,9 @@ action "history", :description => "Show the history of an image" do
 		:prompt => "Name",
 		:display_as	=> "Name",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
     output :history,
 	  :description => "Output from API call, map of image history",
@@ -145,8 +171,8 @@ action "images", :description => "List images" do
 		:prompt => "Filter",
 		:display_as	=> "Filter",
 		:type		=> :string,
+		:validation	=> any_string_validation(true),
 		:optional	=> :true,
-		:validation	=> '.*',
 		:maxlength	=> 1024
 
     output :images,
@@ -168,9 +194,9 @@ action "inspect", :description => "Return low-level information on a container" 
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :details,
 		:description	=> "Container details as map",
@@ -183,9 +209,9 @@ action "inspecti", :description => "Return low-level information on an image" do
 		:prompt => "Name",
 		:display_as	=> "Name",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
     output :details,
 	  :description => "Output from API call, map of image details",
@@ -200,9 +226,9 @@ action "kill", :description => "Kill a running container using SIGKILL or a spec
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 12
+		:maxlength	=> max_length_container
 
 	input	:signal,
 		:description	=> "Signal to send to the container (e.g. SIGKILL)",
@@ -226,9 +252,9 @@ action "pause", :description => "Pause all processes within a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :exitcode,
 		:description	=> "return code of action",
@@ -256,18 +282,18 @@ action "ps", :description => "List containers" do
 		:prompt => "Show only containers created since containers with Id",
 		:display_as	=> "Since ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]*$',
+		:validation	=> container_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:beforeId,
 		:description	=> "Show only containers created before containers with Id",
 		:prompt => "Show only containers created before containers with Id",
 		:display_as	=> "Before ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]*$',
+		:validation	=> container_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:size,
 		:description 	=> "Show sizes",
@@ -289,18 +315,18 @@ action "pull", :description => "Pull an image or a repository from the registry"
 		:prompt => "From",
 		:display_as	=> "From",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input	:tag,
 		:description	=> "Tag",
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]*$',
+		:validation	=> tag_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_tag
 
 	output :exitcode,
 		:description	=> "return code of action",
@@ -315,18 +341,18 @@ action "push", :description => "Push an image or a repository to the registry" d
 		:prompt => "From",
 		:display_as	=> "From",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input	:tag,
 		:description	=> "Tag",
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]*$',
+		:validation	=> tag_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_tag
 
 	output :result,
 		:description	=> "Result of action",
@@ -341,9 +367,9 @@ action "restart", :description => "Restart a running container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:timeout,
 		:description => "Time to wait before killing the container",
@@ -365,9 +391,9 @@ action "rm", :description => "Remove a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:rmvolumes,
 		:description => "Remove the associated volumes",
@@ -398,9 +424,9 @@ action "rmi", :description => "Remove an image" do
 		:prompt => "Name",
 		:display_as	=> "Name",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input	:noprune,
 		:description => "No prune",
@@ -431,9 +457,9 @@ action "start", :description => "Restart a stopped container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :exitcode,
 		:description	=> "Exitcode",
@@ -448,9 +474,9 @@ action "stop", :description => "Stop a running container by sending SIGTERM and 
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:timeout,
 		:description => "Time to wait before killing the container",
@@ -472,27 +498,27 @@ action "tag", :description => "Tag an image into a repository" do
 		:prompt => "Name",
 		:display_as	=> "Name",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> image_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_image
 
 	input	:repo,
 		:description	=> "Repository",
 		:prompt => "Repo",
 		:display_as	=> "Repo",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_:/]+$',
+		:validation	=> repo_validation,
 		:optional	=> :false,
-		:maxlength	=> 1024
+		:maxlength	=> max_length_repo
 
 	input	:tag,
 		:description	=> "Tag",
 		:prompt => "Tag",
 		:display_as	=> "Tag",
 		:type		=> :string,
-		:validation	=> '^[-\.a-zA-Z0-9_]+$',
+		:validation	=> tag_validation(true),
 		:optional	=> :true,
-		:maxlength	=> 64
+		:maxlength	=> max_length_tag
 
 	input	:force,
 		:description => "Force",
@@ -515,9 +541,9 @@ action "top", :description => "Display the running processes of a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	input	:psargs,
 		:description	=> "Argument to pass to ps",
@@ -541,9 +567,9 @@ action "unpause", :description => "Unpause all processes within a container" do
 		:prompt => "Id",
 		:display_as	=> "Container ID",
 		:type		=> :string,
-		:validation	=> '^[a-fA-F0-9]+$',
+		:validation	=> container_validation,
 		:optional	=> :false,
-		:maxlength	=> 64
+		:maxlength	=> max_length_container
 
 	output :exitcode,
 		:description	=> "return code of action",

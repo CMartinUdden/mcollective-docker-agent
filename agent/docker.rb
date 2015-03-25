@@ -173,7 +173,7 @@ module MCollective
 
         begin
           manifest = _request(:get, "images/#{request[:image]}/manifest") 
-          reply[:exitcode] = _request(:post, "images/#{request[:image]}/push?", manifest)
+          reply[:exitcode] = _request(:post, "images/#{request[:image]}/push?", options, manifest)
         rescue => e
           reply.fail! "Error querying docker api (POST images/#{request[:image]}/push), #{e}"
           logger.error e
